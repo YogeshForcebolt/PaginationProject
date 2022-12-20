@@ -24,12 +24,36 @@ namespace TestingPagination.Controllers
             db = dBContext;
         }
 
-        public IActionResult Index()
+        
+
+        public IActionResult Index([FromQuery]int next)
         {
+            List<Employee> li = db.employee_tb.ToList();
+            if (next == 2) {
+                PageState.CurrentPage = PageState.CurrentPage+1;
+                List<Employee> spel;
+                try
+                {
+                    spel = li.GetRange(PageState.CurrentItem, PageState.ItemPerPage);
+                }
+                catch (Exception e) {
+                    spel = li.GetRange(PageState.CurrentItem, li.Count-PageState.CurrentItem);
+                }
+                PageState.CurrentItem += PageState.ItemPerPage;
+
+                return View(spel);
+            }
+
             
-            List<Employee>  li = db.employee_tb.ToList();
+            PageState.CurrentPage = 1;
+            PageState.ItemPerPage = 2;
+            PageState.CurrentItem = PageState.ItemPerPage;
+            PageState.TotalItems =li.Count;
+            PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems/(double)PageState.ItemPerPage);
+
+            List<Employee> speli = li.GetRange(0, PageState.ItemPerPage);
             
-            return View(li);
+            return View(speli);
         }
 
         public IActionResult Privacy()

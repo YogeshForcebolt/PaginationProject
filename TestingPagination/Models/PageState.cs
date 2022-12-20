@@ -7,6 +7,7 @@ namespace TestingPagination.Models
 {
     public static class PageState
     {
+        public static int CurrentItem { get; set; }
         public static int CurrentPage { get; set; }
 
         public static int TotalPages { get; set; }
