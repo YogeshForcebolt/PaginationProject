@@ -8,8 +8,6 @@ C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreap
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\TestingPagination.pdb
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\TestingPagination.Views.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\TestingPagination.Views.pdb
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\EntityFramework.SqlServer.dll
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\EntityFramework.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.Data.SqlClient.dll
@@ -18,9 +16,7 @@ C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreap
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\Microsoft.Identity.Client.dll
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\System.CodeDom.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\System.Runtime.Caching.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\Microsoft.Data.SqlClient.dll
@@ -28,8 +24,6 @@ C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreap
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
@@ -42,12 +36,9 @@ C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreap
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.RazorAssemblyInfo.cache
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.RazorAssemblyInfo.cs
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\staticwebassets\TestingPagination.StaticWebAssets.Manifest.cache
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\staticwebassets\TestingPagination.StaticWebAssets.xml
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\scopedcss\bundle\TestingPagination.styles.css
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.TagHelpers.input.cache
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.TagHelpers.output.cache
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.RazorCoreGenerate.cache
-C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Home\Privacy.cshtml.g.cs
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Error.cshtml.g.cs
 C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Layout.cshtml.g.cs
@@ -118,3 +109,7 @@ C:\Users\yk313\source\repos\Pagination\PaginationProject\TestingPagination\obj\D
 C:\Users\yk313\source\repos\Pagination\PaginationProject\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.dll
 C:\Users\yk313\source\repos\Pagination\PaginationProject\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.pdb
 C:\Users\yk313\source\repos\Pagination\PaginationProject\TestingPagination\obj\Debug\netcoreapp3.1\TestingPagination.genruntimeconfig.cache
+C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\staticwebassets\TestingPagination.StaticWebAssets.xml
+C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\scopedcss\bundle\TestingPagination.styles.css
+C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Home\Main.cshtml.g.cs
+C:\Users\CA\source\repos\TestingPagination\TestingPagination\obj\Debug\netcoreapp3.1\Razor\Views\Home\Main-dump.cshtml.g.cs

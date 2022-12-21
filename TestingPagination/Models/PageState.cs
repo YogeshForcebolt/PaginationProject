@@ -14,5 +14,33 @@ namespace TestingPagination.Models
         public static int ItemPerPage { get; set; }
 
         public static int TotalItems { get; set; }
+
+        public static int StartPage { get; set; }
+        public static int EndPage { get; set; }
+
+        public static void PageNumberState() {
+
+            StartPage = CurrentPage;
+
+            if (StartPage - 1 < 1)
+            {
+                StartPage = CurrentPage;
+            }
+            else {
+                StartPage -= 1;
+            }
+
+
+            EndPage = 2;
+            int endPage = EndPage + StartPage;
+            if (endPage > TotalPages)
+            {
+                EndPage = TotalPages;
+            }
+            else
+            {
+                EndPage = endPage;
+            }
+        }
     }
 }
