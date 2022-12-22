@@ -28,10 +28,180 @@ namespace TestingPagination.Controllers
             return View();        
         }
 
-
-        public IActionResult Index([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page,[FromForm] int itemPerPage)
+        private static int state;
+        public IActionResult Index([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page,[FromForm] int itemPerPage,[FromQuery] string sort)
         {
-            
+            if (sort!=null) {
+                if (state == 2)
+                {
+                    state = 0;
+                }
+                else {
+                    state++;
+                }
+            }
+
+            if (state == 1)
+            {
+                if (next == "next")
+                {
+                    if (PageState.TotalPages == PageState.CurrentPage)
+                    {
+                        List<Employee> last = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
+                        return Ok(lastData);
+
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage + 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem += PageState.ItemPerPage;
+                    List<Employee> nex = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
+                    return Ok(lastData1);
+                }
+
+                if (previous == "previous")
+                {
+
+                    if (1 == PageState.CurrentPage)
+                    {
+                        List<Employee> prev1 = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
+                        return Ok(previousData1);
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage - 1;
+                    PageState.PageNumberState();
+                    /* ViewData["startPage"] = PageState.StartPage;
+                     ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem -= PageState.ItemPerPage;
+                    List<Employee> prev = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
+                    return Ok(previousData);
+                }
+
+                if (page > 0)
+                {
+                    if (PageState.CurrentPage == page)
+                    {
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        List<Employee> same = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
+                        return Ok(sameData);
+                    }
+                    PageState.CurrentPage = page;
+                    int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
+                    PageState.CurrentItem = skip;
+                    List<Employee> defined = (db.employee_tb).OrderBy(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
+                    return Ok(definedData);
+                }
+
+                List<Employee> searchedData = (db.employee_tb).OrderBy(elem => elem.Name).ToList();
+                PageState.CurrentPage = 1;
+                //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.CurrentItem = 0;
+                PageState.TotalItems = searchedData.Count;
+                PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
+                PageState.PageNumberState();
+                /*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage; */
+                JsonData frontData1 = new JsonData(searchedData.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
+                return Ok(frontData1);
+            }
+
+            else if (state == 2) {
+                if (next == "next")
+                {
+                    if (PageState.TotalPages == PageState.CurrentPage)
+                    {
+                        List<Employee> last = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                         JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
+                        return Ok(lastData);
+
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage + 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                     PageState.CurrentItem += PageState.ItemPerPage;
+                    List<Employee> nex = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
+                    return Ok(lastData1);
+                }
+
+                if (previous == "previous")
+                {
+
+                    if (1 == PageState.CurrentPage)
+                    {
+                        List<Employee> prev1 = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                         JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
+                        return Ok(previousData1);
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage - 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                     PageState.CurrentItem -= PageState.ItemPerPage;
+                    List<Employee> prev = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
+                    return Ok(previousData);
+                }
+
+                if (page > 0)
+                {
+                    if (PageState.CurrentPage == page)
+                    {
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                         List < Employee > same = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
+                        return Ok(sameData);
+                    }
+                    PageState.CurrentPage = page;
+                    int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
+                    PageState.CurrentItem = skip;
+                    List<Employee> defined = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                     JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
+                    return Ok(definedData);
+                }
+
+
+
+                List<Employee> searchedData = (db.employee_tb).OrderByDescending(elem => elem.Name).ToList();
+                PageState.CurrentPage = 1;
+                //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.CurrentItem = 0;
+                PageState.TotalItems = searchedData.Count;
+                PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
+                PageState.PageNumberState();
+                /*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage; */
+                 JsonData frontData1 = new JsonData(searchedData.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
+                return Ok(frontData1);
+            }
+
+
+
             if (next == "next") {
                 if (PageState.TotalPages == PageState.CurrentPage)
                 {
@@ -94,7 +264,7 @@ namespace TestingPagination.Controllers
 
             List<Employee> li = db.employee_tb.ToList();
             PageState.CurrentPage = 1;
-            PageState.ItemPerPage = itemPerPage==0?2:itemPerPage;
+            PageState.ItemPerPage = itemPerPage!=0?itemPerPage:PageState.ItemPerPage;
             PageState.CurrentItem = 0;
             PageState.TotalItems =li.Count;
             PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems/(double)PageState.ItemPerPage);
@@ -119,8 +289,182 @@ namespace TestingPagination.Controllers
 
         private static string lastSearch;
         //Search Operation
-        public IActionResult Search([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string search)
+        public IActionResult Search([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string search, [FromQuery] string sort)
         {
+            if (sort != null)
+            {
+                if (state == 2)
+                {
+                    state = 0;
+                }
+                else
+                {
+                    state++;
+                }
+            }
+            if (state == 1)
+            {
+                if (next == "next")
+                {
+                    if (PageState.TotalPages == PageState.CurrentPage)
+                    {
+                        List<Employee> last = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
+                        return Ok(lastData);
+
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage + 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem += PageState.ItemPerPage;
+                    List<Employee> nex = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
+                    return Ok(lastData1);
+                }
+
+                if (previous == "previous")
+                {
+
+                    if (1 == PageState.CurrentPage)
+                    {
+                        List<Employee> prev1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
+                        return Ok(previousData1);
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage - 1;
+                    PageState.PageNumberState();
+                    /* ViewData["startPage"] = PageState.StartPage;
+                     ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem -= PageState.ItemPerPage;
+                    List<Employee> prev = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
+                    return Ok(previousData);
+                }
+
+                if (page > 0)
+                {
+                    if (PageState.CurrentPage == page)
+                    {
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        List<Employee> same = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
+                        return Ok(sameData);
+                    }
+                    PageState.CurrentPage = page;
+                    int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
+                    PageState.CurrentItem = skip;
+                    List<Employee> defined = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
+                    return Ok(definedData);
+                }
+
+                List<Employee> searchedData1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).ToList();
+                PageState.CurrentPage = 1;
+                //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.CurrentItem = 0;
+                PageState.TotalItems = searchedData1.Count;
+                PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
+                PageState.PageNumberState();
+                /*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage; */
+                JsonData frontData1 = new JsonData(searchedData1.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
+                return Ok(frontData1);
+            }
+
+            else if (state == 2)
+            {
+                if (next == "next")
+                {
+                    if (PageState.TotalPages == PageState.CurrentPage)
+                    {
+                        List<Employee> last = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
+                        return Ok(lastData);
+
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage + 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem += PageState.ItemPerPage;
+                    List<Employee> nex = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
+                    return Ok(lastData1);
+                }
+
+                if (previous == "previous")
+                {
+
+                    if (1 == PageState.CurrentPage)
+                    {
+                        List<Employee> prev1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        PageState.PageNumberState();
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
+                        return Ok(previousData1);
+                    }
+                    PageState.CurrentPage = PageState.CurrentPage - 1;
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    PageState.CurrentItem -= PageState.ItemPerPage;
+                    List<Employee> prev = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
+                    return Ok(previousData);
+                }
+
+                if (page > 0)
+                {
+                    if (PageState.CurrentPage == page)
+                    {
+                        /*ViewData["startPage"] = PageState.StartPage;
+                        ViewData["endPage"] = PageState.EndPage; */
+                        List<Employee> same = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
+                        return Ok(sameData);
+                    }
+                    PageState.CurrentPage = page;
+                    int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
+                    PageState.CurrentItem = skip;
+                    List<Employee> defined = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                    PageState.PageNumberState();
+                    /*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage; */
+                    JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
+                    return Ok(definedData);
+                }
+
+
+
+                List<Employee> searchedData1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).ToList();
+                PageState.CurrentPage = 1;
+                //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.CurrentItem = 0;
+                PageState.TotalItems = searchedData1.Count;
+                PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
+                PageState.PageNumberState();
+                /*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage; */
+                JsonData frontData1 = new JsonData(searchedData1.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
+                return Ok(frontData1);
+            }
+
+
+
+
             if (next == "next")
             {
                 if (PageState.TotalPages == PageState.CurrentPage)
@@ -199,8 +543,8 @@ namespace TestingPagination.Controllers
                 return Ok(frontData1);
             }
                 
-                lastSearch = search;
-                List<Employee> searchedData = (db.employee_tb).Where(elem => elem.Name.Contains(search)).ToList();
+                lastSearch = search==null?lastSearch:search;
+                List<Employee> searchedData = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).ToList();
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage==0?PageState.ItemPerPage:itemPerPage;
                 PageState.CurrentItem = 0;
@@ -227,8 +571,8 @@ namespace TestingPagination.Controllers
 
 
 
-
-        public IActionResult FilterByAscending([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage) {
+        
+        /*public IActionResult FilterBy([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage) {
              if (next == "next")
             {
                 if (PageState.TotalPages == PageState.CurrentPage)
@@ -241,8 +585,8 @@ namespace TestingPagination.Controllers
                 }
                 PageState.CurrentPage = PageState.CurrentPage + 1;
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 PageState.CurrentItem += PageState.ItemPerPage;
                 List<Employee> nex = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                 JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
@@ -256,15 +600,15 @@ namespace TestingPagination.Controllers
                 {
                     List<Employee> prev1 = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     PageState.PageNumberState();
-                    /*ViewData["startPage"] = PageState.StartPage;
-                    ViewData["endPage"] = PageState.EndPage;*/
+                    *//*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage;*//*
                     JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
                     return Ok(previousData1);
                 }
                 PageState.CurrentPage = PageState.CurrentPage - 1;
                 PageState.PageNumberState();
-               /* ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+               *//* ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 PageState.CurrentItem -= PageState.ItemPerPage;
                 List<Employee> prev = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                 JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
@@ -275,8 +619,8 @@ namespace TestingPagination.Controllers
             {
                 if (PageState.CurrentPage == page)
                 {
-                    /*ViewData["startPage"] = PageState.StartPage;
-                    ViewData["endPage"] = PageState.EndPage;*/
+                    *//*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage;*//*
                     List<Employee> same = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
                     return Ok(sameData);
@@ -286,8 +630,8 @@ namespace TestingPagination.Controllers
                 PageState.CurrentItem = skip;
                 List<Employee> defined = (db.employee_tb).OrderBy(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
                 return Ok(definedData);
             }
@@ -299,8 +643,8 @@ namespace TestingPagination.Controllers
                 PageState.TotalItems = searchedData.Count;
                 PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 JsonData frontData = new JsonData(searchedData.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
                 return Ok(frontData);
 
@@ -321,16 +665,16 @@ namespace TestingPagination.Controllers
                 {
                     List<Employee> last = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     PageState.PageNumberState();
-                    /*ViewData["startPage"] = PageState.StartPage;
-                    ViewData["endPage"] = PageState.EndPage;*/
+                    *//*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage;*//*
                     JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
                     return Ok(lastData);
                     
                 }
                 PageState.CurrentPage = PageState.CurrentPage + 1;
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 PageState.CurrentItem += PageState.ItemPerPage;
                 List<Employee> nex = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                 JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
@@ -344,15 +688,15 @@ namespace TestingPagination.Controllers
                 {
                     List<Employee> prev1 = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     PageState.PageNumberState();
-                    /*ViewData["startPage"] = PageState.StartPage;
-                    ViewData["endPage"] = PageState.EndPage;*/
+                    *//*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage;*//*
                     JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
                     return Ok(previousData1);
                 }
                 PageState.CurrentPage = PageState.CurrentPage - 1;
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 PageState.CurrentItem -= PageState.ItemPerPage;
                 List<Employee> prev = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                 JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
@@ -363,8 +707,8 @@ namespace TestingPagination.Controllers
             {
                 if (PageState.CurrentPage == page)
                 {
-                    /*ViewData["startPage"] = PageState.StartPage;
-                    ViewData["endPage"] = PageState.EndPage;*/
+                    *//*ViewData["startPage"] = PageState.StartPage;
+                    ViewData["endPage"] = PageState.EndPage;*//*
                     List<Employee> same = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
                     return Ok(sameData);
@@ -374,8 +718,8 @@ namespace TestingPagination.Controllers
                 PageState.CurrentItem = skip;
                 List<Employee> defined = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
                 PageState.PageNumberState();
-                /*ViewData["startPage"] = PageState.StartPage;
-                ViewData["endPage"] = PageState.EndPage;*/
+                *//*ViewData["startPage"] = PageState.StartPage;
+                ViewData["endPage"] = PageState.EndPage;*//*
                 JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
                 return Ok(definedData);
             }
@@ -387,11 +731,11 @@ namespace TestingPagination.Controllers
             PageState.TotalItems = searchedData.Count;
             PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
             PageState.PageNumberState();
-            /*ViewData["startPage"] = PageState.StartPage;
-            ViewData["endPage"] = PageState.EndPage;*/
+            *//*ViewData["startPage"] = PageState.StartPage;
+            ViewData["endPage"] = PageState.EndPage;*//*
             JsonData frontData = new JsonData(searchedData.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
             return Ok(frontData);
-        }
+        }*/
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

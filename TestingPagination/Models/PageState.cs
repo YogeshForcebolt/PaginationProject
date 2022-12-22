@@ -11,7 +11,7 @@ namespace TestingPagination.Models
         public static int CurrentPage { get; set; }
 
         public static int TotalPages { get; set; }
-        public static int ItemPerPage { get; set; }
+        public static int ItemPerPage { get; set; } = 2;
 
         public static int TotalItems { get; set; }
 

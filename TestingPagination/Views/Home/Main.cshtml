@@ -120,12 +120,104 @@
 
     function Search(elem) {
         link = "search";
-        console.log(elem.value);
+        if (elem.value == "") {
+            link = "index";
+            $.ajax({
+                url: 'https://localhost:44310/home/index',
+                type: 'Get',
+                contentType: 'application/json',
+                success: function (response) {
+                    //console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                        <div class="col-sm">`+ currentValue.id + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.name + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.age + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.gender + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.status + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.created_date + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.modifed_date + `
+                        </div>
+                    </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                }
+            })
+        } else {
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?search=" + elem.value,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                        <div class="col-sm">`+ currentValue.id + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.name + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.age + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.gender + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.status + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.created_date + `
+                        </div>
+                        <div class="col-sm">
+                            `+ currentValue.modifed_date + `
+                        </div>
+                    </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
+                }
+
+            })
+        }
+    }
+
+
+    function SortName() {
         $.ajax({
-            url: "https://localhost:44310/home/" + link +"?search="+ elem.value,
-            type: "POST",
+            url: 'https://localhost:44310/home/' + link + '?sort=done',
+            type: 'Get',
+            contentType: 'application/json',
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 startPage = parseInt(response.startPage);
                 endPage = parseInt(response.endPage);
                 $("#maintable").html("");
@@ -159,15 +251,9 @@
                 for (let i = startPage; i <= endPage; i++) {
                     $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
+                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
             }
-
         })
-    }
-
-
-    function SortName() {
-
     }
 
     
