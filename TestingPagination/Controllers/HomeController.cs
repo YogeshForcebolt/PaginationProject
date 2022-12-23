@@ -109,6 +109,7 @@ namespace TestingPagination.Controllers
                 List<Employee> searchedData = (db.employee_tb).OrderBy(elem => elem.Name).ToList();
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
                 PageState.CurrentItem = 0;
                 PageState.TotalItems = searchedData.Count;
                 PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
@@ -190,6 +191,7 @@ namespace TestingPagination.Controllers
                 List<Employee> searchedData = (db.employee_tb).OrderByDescending(elem => elem.Name).ToList();
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
                 PageState.CurrentItem = 0;
                 PageState.TotalItems = searchedData.Count;
                 PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
@@ -367,9 +369,12 @@ namespace TestingPagination.Controllers
                     return Ok(definedData);
                 }
 
+                lastSearch = search == null ? lastSearch : search;
+
                 List<Employee> searchedData1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderBy(elem => elem.Name).ToList();
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
                 PageState.CurrentItem = 0;
                 PageState.TotalItems = searchedData1.Count;
                 PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
@@ -447,11 +452,12 @@ namespace TestingPagination.Controllers
                     return Ok(definedData);
                 }
 
-
+                lastSearch = search == null ? lastSearch : search;
 
                 List<Employee> searchedData1 = (db.employee_tb).Where(elem => elem.Name.Contains(lastSearch)).OrderByDescending(elem => elem.Name).ToList();
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
+                PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
                 PageState.CurrentItem = 0;
                 PageState.TotalItems = searchedData1.Count;
                 PageState.TotalPages = (int)Math.Ceiling((double)PageState.TotalItems / (double)PageState.ItemPerPage);
