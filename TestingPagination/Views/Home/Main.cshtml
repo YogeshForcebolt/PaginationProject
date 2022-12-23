@@ -5,11 +5,30 @@
 }
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>*@
+    <!-- CSS only -->
+    <!-- JavaScript Bundle with Popper -->
+@*<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.2.0/mdb.min.css"
+      rel="stylesheet" />*@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 </head>
-
+<style>.dropdown-menu li {
+position: relative;
+}
+.dropdown-menu .dropdown-submenu {
+display: none;
+position: absolute;
+left: 100%;
+top: -7px;
+}
+.dropdown-menu .dropdown-submenu-left {
+right: 100%;
+left: auto;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+display: block;
+}</style>
 
 <form id="formEntries">
     <select onchange="FormSumbit()" id="PageEntries" name="itemPerPage" class="form-select form-select-sm form-control-sm" style="width:auto" aria-label="Default select example">
@@ -24,149 +43,114 @@
         <input type="search" class="form-control" oninput="Search(this);" required name="search" placeholder="Search by Name" aria-label="Recipient's username" aria-describedby="button-addon2">
         @*<button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>*@
     </div>
+@*
+    <div class="dropdown" style="position: -webkit-sticky; position: fixed; bottom: 25%; right: 5%; width: stretch; z-index: 2 ">
+        </div>*@
+    
+<div class="container" style="position: -webkit-sticky; position: fixed; bottom: 25%; right: 9%; width: stretch; z-index: 2 ">
 
-@*<div class="dropdown" style="position: -webkit-sticky; position: fixed; bottom: 17%; right: 5%; width: stretch; z-index: 2 ">
+    <div class="dropdown float-right">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-mdb-toggle="dropdown" aria-expanded="false">
+            Select Filters
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" onclick="SortAsc();" style="cursor:pointer">Sort By Ascending</a></li>
-        <li><a class="dropdown-item" onclick="SortDes();" style="cursor:pointer">Sort By Descending</a></li>
-    </ul>
-</div>*@
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <h6>Id</h6>
-        </div>
-        <div class="col-sm">
-            <button type="button" class="btn btn-outline-primary" onclick="SortName();">Name</button>
-        </div>
-        <div class="col-sm">
-            <h6>Age</h6>
-        </div>
-        <div class="col-sm">
-            <h6>Gender</h6>
-        </div>
-        <div class="col-sm">
-            <h6>Status</h6>
-        </div>
-        <div class="col-sm">
-            <h6>Created Date</h6>
-        </div>
-        <div class="col-sm">
-            <h6>Modified Date</h6>
-        </div>
+            <li>
+                <a class="dropdown-item" href="#">
+                    Gender &raquo;
+                </a>
+                <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                        <a class="dropdown-item" onclick="GetAll();">All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="GetMale();">Male</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="GetFemale();">Female</a>
+                    </li>
+
+
+                </ul>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">Status &raquo; </a>
+                <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                        <a class="dropdown-item" onclick="GetAll();">All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="GetActive();">Active</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="GetInActive();">Inactive</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">Date</a>
+            </li>
+        </ul>
     </div>
 </div>
-<div id="maintable" class="container">
 
-</div>
-<div class="container">
-    <nav aria-label="Page navigation example">
-        <ul id="pagination" class="pagination">
 
-        </ul>
-    </nav>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.3.js"
-        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-        crossorigin="anonymous"></script>
-<script>
-    var link="index";
-    function FormSumbit() { 
-           $.ajax({
-            url: "https://localhost:44310/home/" + link  ,
-            type: "POST",
-            data: $('#formEntries').serialize(),
-            success: function (response) {
-                console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                $("#maintable").html("");
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h6>Id</h6>
+            </div>
+            <div class="col-sm">
+                <a class="btn btn-outline-primary" onclick="SortName();" style="border:hidden"><h6>Name</h6></a>
+            </div>
+            <div class="col-sm">
+                <h6>Age</h6>
+            </div>
+            <div class="col-sm">
+                <h6>Gender</h6>
+            </div>
+            <div class="col-sm">
+                <h6>Status</h6>
+            </div>
+            <div class="col-sm">
+                <h6>Created Date</h6>
+            </div>
+            <div class="col-sm">
+                <h6>Modified Date</h6>
+            </div>
+        </div>
+    </div>
+    <div id="maintable" class="container">
 
-                });
-                $("#pagination").html("");
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
-                }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
-            }
+    </div>
+    <div class="container">
+        <nav aria-label="Page navigation example">
+            <ul id="pagination" class="pagination">
+            </ul>
+        </nav>
+    </div>
+    @*<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.2.0/mdb.min.js"></script>*@
 
-        })
-    }
-
-    function Search(elem) {
-        link = "search";
-        if (elem.value == "") {
-            link = "index";
-            $.ajax({
-                url: 'https://localhost:44310/home/index',
-                type: 'Get',
-                contentType: 'application/json',
-                success: function (response) {
-                    //console.log(response);
-                    startPage = parseInt(response.startPage);
-                    endPage = parseInt(response.endPage);
-                    $("#maintable").html("");
-                    response.listOfData.forEach(function (currentValue, index) {
-                        $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
-
-                    });
-                    $("#pagination").html("");
-                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                    for (let i = startPage; i <= endPage; i++) {
-                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
-                    }
-                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
-                }
+    <script src="https://code.jquery.com/jquery-3.6.3.js"
+            integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+            crossorigin="anonymous"></script>
+    <script>
+        let dropdowns = document.querySelectorAll('.dropdown-toggle')
+        dropdowns.forEach((dd) => {
+            dd.addEventListener('click', function (e) {
+                var el = this.nextElementSibling
+                el.style.display = el.style.display === 'block' ? 'none' : 'block'
             })
-        } else {
+        })
+        var gender;
+        var status;
+        function GetActive() {
+            gender = "";
+            status = "active";
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?search=" + elem.value,
+                url: "https://localhost:44310/home/" + link + "?status=active",
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -175,27 +159,27 @@
                     $("#maintable").html("");
                     response.listOfData.forEach(function (currentValue, index) {
                         $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
 
                     });
                     $("#pagination").html("");
@@ -208,239 +192,568 @@
 
             })
         }
-    }
 
+        function GetInActive() {
+            gender = "";
+            status = "inactive";
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?status=inactive",
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
 
-    function SortName() {
-        $.ajax({
-            url: 'https://localhost:44310/home/' + link + '?sort=done',
-            type: 'Get',
-            contentType: 'application/json',
-            success: function (response) {
-                //console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                $("#maintable").html("");
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
-
-                });
-                $("#pagination").html("");
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
-            }
-        })
-    }
 
-    
-    var startPage;
-    var endPage;
-    $(document).ready(function () {
-        $.ajax({
-            url: 'https://localhost:44310/home/index',
-            type: 'Get',
-            contentType: 'application/json',
-            success: function (response) {
-                //console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
+            })
+        }
 
-                });
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+        function GetMale() {
+            gender = "male";
+            status = "";
+            $.ajax({
+                url: "https://localhost:44310/home/" + link+"?gender=male",
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
-            }
-        })
-    });
 
+            })
+        }
 
-    function Previous() {
-        $.ajax({
-            url: "https://localhost:44310/home/" + link + "?previous=previous",
-            type: "POST",
-            success: function (response) {
-                console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                $("#maintable").html("");
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
+        function GetFemale() {
+            gender = "female";
+            status = "";
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?gender=female",
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
 
-                });
-                $("#pagination").html("");
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="`+i+`" >` + i + `</button></li>`);
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
-            }
 
-        })
-    }
+            })
+        }
 
 
-    function Next() {
-        $.ajax({
-            url: "https://localhost:44310/home/" + link + "?next=next",
-            type: "POST",
-            success: function (response) {
-                console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                $("#maintable").html("");
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
+        function GetAll() {
+            gender = "";
+            status = "";
+            $.ajax({
+                url: "https://localhost:44310/home/" + link ,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
 
-                });
-                $("#pagination").html("");
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
-            }
 
-        })
-    }
+            })
+        }
 
 
-    function Page(elem) {
-        $.ajax({
-            url: "https://localhost:44310/home/" + link + "?page="+elem.value+"",
-            type: "POST",
-            success: function (response) {
-                console.log(response);
-                startPage = parseInt(response.startPage);
-                endPage = parseInt(response.endPage);
-                $("#maintable").html("");
-                response.listOfData.forEach(function (currentValue, index) {
-                    $("#maintable").append(`<div class="row">
-                        <div class="col-sm">`+ currentValue.id + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.name + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.age + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.gender + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.status + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.created_date + `
-                        </div>
-                        <div class="col-sm">
-                            `+ currentValue.modifed_date + `
-                        </div>
-                    </div>`);
 
-                });
-                $("#pagination").html("");
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
-                for (let i = startPage; i <= endPage; i++) {
-                    $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+        var link = "index";
+        function FormSumbit() {
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?gender=" + gender + "?status=" + status,
+                type: "POST",
+                data: $('#formEntries').serialize(),
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
                 }
-                $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+
+            })
+        }
+
+        function Search(elem) {
+            link = "search";
+            if (elem.value == "") {
+                link = "index";
+                $.ajax({
+                    url: 'https://localhost:44310/home/index',
+                    type: 'Get',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        //console.log(response);
+                        startPage = parseInt(response.startPage);
+                        endPage = parseInt(response.endPage);
+                        $("#maintable").html("");
+                        response.listOfData.forEach(function (currentValue, index) {
+                            $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                        });
+                        $("#pagination").html("");
+                        $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                        for (let i = startPage; i <= endPage; i++) {
+                            $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                        }
+                        $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: "https://localhost:44310/home/" + link + "?search=" + elem.value,
+                    type: "POST",
+                    success: function (response) {
+                        console.log(response);
+                        startPage = parseInt(response.startPage);
+                        endPage = parseInt(response.endPage);
+                        $("#maintable").html("");
+                        response.listOfData.forEach(function (currentValue, index) {
+                            $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                        });
+                        $("#pagination").html("");
+                        $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                        for (let i = startPage; i <= endPage; i++) {
+                            $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                        }
+                        $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
+                    }
+
+                })
             }
-
-        })
-    }
+        }
 
 
+        function SortName() {
+            $.ajax({
+                url: 'https://localhost:44310/home/' + link + '?sort=done&gender=' + gender + "&status=" + status,
+                type: 'Get',
+                contentType: 'application/json',
+                success: function (response) {
+                    //console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                }
+            })
+        }
 
 
-</script>
+        var startPage;
+        var endPage;
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://localhost:44310/home/index',
+                type: 'Get',
+                contentType: 'application/json',
+                success: function (response) {
+                    //console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                }
+            })
+        });
+
+
+        function Previous() {
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?previous=previous&gender=" + gender+ "&status=" + status,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
+                }
+
+            })
+        }
+
+
+        function Next() {
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?next=next&gender=" + gender + "&status=" + status,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                }
+
+            })
+        }
+
+
+        function Page(elem) {
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?page=" + elem.value + "&gender=" + gender + "&status=" + status,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();" >Next</a></li>`);
+                }
+
+            })
+        }
+
+
+
+
+    </script>
