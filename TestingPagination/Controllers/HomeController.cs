@@ -29,7 +29,7 @@ namespace TestingPagination.Controllers
         }
 
         private static int state;
-        public IActionResult Index([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string sort,[FromQuery] string gender,[FromQuery] string status,[FromQuery] DateTime date)
+        public IActionResult Index([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string sort,[FromQuery] string gender,[FromQuery] string status,[FromQuery] string filterCreated, [FromQuery] DateTime createdToDate, [FromQuery] DateTime createdFromDate, [FromQuery] string filterModified, [FromQuery] DateTime modifiedToDate, [FromQuery] DateTime modifiedFromDate)
         {
             if (sort!=null) {
                 if (state == 2)
@@ -47,25 +47,42 @@ namespace TestingPagination.Controllers
                 {
                     if (PageState.TotalPages == PageState.CurrentPage)
                     {
-                        List<Employee> last = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        List<Employee> last = (db.employee_tb).ToList();
                         PageState.PageNumberState();
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            last = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            last = last.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            last = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            last = last.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            last = db.employee_tb.Where(li => li.Status == true).ToList();
+                            last = last.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            last = db.employee_tb.Where(li => li.Status == false).ToList();
+                            last = last.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            last = last.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            last = last.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            last = last.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            last = last.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+                        last = last.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
                         return Ok(lastData);
 
@@ -75,24 +92,41 @@ namespace TestingPagination.Controllers
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage; */
                     PageState.CurrentItem += PageState.ItemPerPage;
-                    List<Employee> nex = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> nex = (db.employee_tb).ToList();
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        nex = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        nex = nex.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        nex = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        nex = nex.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        nex = db.employee_tb.Where(li => li.Status == true).ToList();
+                        nex = nex.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        nex = db.employee_tb.Where(li => li.Status == false).ToList();
+                        nex = nex.Where(li => li.Status == false).ToList();
                     }
+                    if (status != null && status.ToLower() == "active")
+                    {
+                        nex = nex.Where(li => li.Status == true).ToList();
+                    }
+                    else if (status != null && status.ToLower() == "inactive")
+                    {
+                        nex = nex.Where(li => li.Status == false).ToList();
+                    }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        nex = nex.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        nex = nex.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    nex = nex.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
                     return Ok(lastData1);
                 }
@@ -102,27 +136,44 @@ namespace TestingPagination.Controllers
 
                     if (1 == PageState.CurrentPage)
                     {
-                        List<Employee> prev1 = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        List<Employee> prev1 = (db.employee_tb).ToList();
                         PageState.PageNumberState();
                         /*ViewData["startPage"] = PageState.StartPage;
                         ViewData["endPage"] = PageState.EndPage; */
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            prev1 = prev1.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            prev1 = prev1.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Status == true).ToList();
+                            prev1 = prev1.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Status == false).ToList();
+                            prev1 = prev1.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            prev1 = prev1.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            prev1 = prev1.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            prev1 = prev1.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            prev1 = prev1.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+                        prev1 = prev1.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
                         return Ok(previousData1);
                     }
@@ -131,24 +182,41 @@ namespace TestingPagination.Controllers
                     /* ViewData["startPage"] = PageState.StartPage;
                      ViewData["endPage"] = PageState.EndPage; */
                     PageState.CurrentItem -= PageState.ItemPerPage;
-                    List<Employee> prev = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> prev = (db.employee_tb).ToList();
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        prev = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev = prev.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        prev = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev = prev.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        prev = db.employee_tb.Where(li => li.Status == true).ToList();
+                        prev = prev.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        prev = db.employee_tb.Where(li => li.Status == false).ToList();
+                        prev = prev.Where(li => li.Status == false).ToList();
                     }
+                    if (status != null && status.ToLower() == "active")
+                    {
+                        prev = prev.Where(li => li.Status == true).ToList();
+                    }
+                    else if (status != null && status.ToLower() == "inactive")
+                    {
+                        prev = prev.Where(li => li.Status == false).ToList();
+                    }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev = prev.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev = prev.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    prev = prev.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
                     return Ok(previousData);
                 }
@@ -159,75 +227,127 @@ namespace TestingPagination.Controllers
                     {
                         /*ViewData["startPage"] = PageState.StartPage;
                         ViewData["endPage"] = PageState.EndPage; */
-                        List<Employee> same = (db.employee_tb).OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        List<Employee> same = (db.employee_tb).ToList();
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            same = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            same = same.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            same = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            same = same.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            same = db.employee_tb.Where(li => li.Status == true).ToList();
+                            same = same.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            same = db.employee_tb.Where(li => li.Status == false).ToList();
+                            same = same.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            same = same.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            same = same.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            same = same.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            same = same.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+                        same = same.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
                         return Ok(sameData);
                     }
                     PageState.CurrentPage = page;
                     int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
                     PageState.CurrentItem = skip;
-                    List<Employee> defined = (db.employee_tb).OrderBy(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> defined = (db.employee_tb).ToList();
                     
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage; */
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        defined = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        defined = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        defined = db.employee_tb.Where(li => li.Status == true).ToList();
+                        defined = defined.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        defined = db.employee_tb.Where(li => li.Status == false).ToList();
+                        defined = defined.Where(li => li.Status == false).ToList();
                     }
+                    if (status != null && status.ToLower() == "active")
+                    {
+                        defined = defined.Where(li => li.Status == true).ToList();
+                    }
+                    else if (status != null && status.ToLower() == "inactive")
+                    {
+                        defined = defined.Where(li => li.Status == false).ToList();
+                    }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        defined = defined.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        defined = defined.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    defined = defined.OrderBy(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
                     PageState.PageNumberState();
                     JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
                     return Ok(definedData);
                 }
 
-                List<Employee> searchedData = (db.employee_tb).OrderBy(elem => elem.Name).ToList();
+                List<Employee> searchedData = (db.employee_tb).ToList();
                 PageState.CurrentPage = 1;
                 if (gender != null && gender.ToLower() == "male")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Gender == "Male").OrderBy(elem => elem.Name).ToList();
+                    searchedData = searchedData.Where(li => li.Gender == "Male").ToList();
 
                 }
                 else if (gender != null && gender.ToLower() == "female")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Gender == "Female").OrderBy(elem => elem.Name).ToList();
+                    searchedData = searchedData.Where(li => li.Gender == "Female").ToList();
                 }
                 if (status != null && status.ToLower() == "active")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Status == true).ToList();
+                    searchedData = searchedData.Where(li => li.Status == true).ToList();
                 }
-                else if (gender != null && gender.ToLower() == "inactive")
+                else if (status != null && status.ToLower() == "inactive")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Status == false).ToList();
+                    searchedData = searchedData.Where(li => li.Status == false).ToList();
                 }
+                if (status != null && status.ToLower() == "active")
+                {
+                    searchedData = searchedData.Where(li => li.Status == true).ToList();
+                }
+                else if (status != null && status.ToLower() == "inactive")
+                {
+                    searchedData = searchedData.Where(li => li.Status == false).ToList();
+                }
+                if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    searchedData = searchedData.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                }
+                if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    searchedData = searchedData.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                }
+                searchedData = searchedData.OrderBy(elem => elem.Name).ToList();
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
                 PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
                 PageState.CurrentItem = 0;
@@ -245,27 +365,44 @@ namespace TestingPagination.Controllers
                 {
                     if (PageState.TotalPages == PageState.CurrentPage)
                     {
-                        List<Employee> last = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
-                        
+                        List<Employee> last = (db.employee_tb).ToList();
+
                         /*ViewData["startPage"] = PageState.StartPage;
                         ViewData["endPage"] = PageState.EndPage; */
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            last = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            last = last.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            last = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            last = last.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            last = db.employee_tb.Where(li => li.Status == true).ToList();
+                            last = last.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            last = db.employee_tb.Where(li => li.Status == false).ToList();
+                            last = last.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            last = last.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            last = last.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            last = last.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            last = last.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+                        last = last.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         PageState.PageNumberState();
                         JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
                         return Ok(lastData);
@@ -276,24 +413,41 @@ namespace TestingPagination.Controllers
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage; */
                      PageState.CurrentItem += PageState.ItemPerPage;
-                    List<Employee> nex = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> nex = (db.employee_tb).ToList();
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        nex = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        nex = nex.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        nex = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        nex = nex.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        nex = db.employee_tb.Where(li => li.Status == true).ToList();
+                        nex = nex.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        nex = db.employee_tb.Where(li => li.Status == false).ToList();
+                        nex = nex.Where(li => li.Status == false).ToList();
                     }
+                    if (status != null && status.ToLower() == "active")
+                    {
+                        nex = nex.Where(li => li.Status == true).ToList();
+                    }
+                    else if (status != null && status.ToLower() == "inactive")
+                    {
+                        nex = nex.Where(li => li.Status == false).ToList();
+                    }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        nex = nex.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        nex = nex.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    nex = nex.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     PageState.PageNumberState();
                     JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
                     return Ok(lastData1);
@@ -304,27 +458,45 @@ namespace TestingPagination.Controllers
 
                     if (1 == PageState.CurrentPage)
                     {
-                        List<Employee> prev1 = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
-                        
+                        List<Employee> prev1 = (db.employee_tb).ToList();
+
                         /*ViewData["startPage"] = PageState.StartPage;
                         ViewData["endPage"] = PageState.EndPage; */
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            prev1 = prev1.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            prev1 = prev1.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Status == true).ToList();
+                            prev1 = prev1.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            prev1 = db.employee_tb.Where(li => li.Status == false).ToList();
+                            prev1 = prev1.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            prev1 = prev1.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            prev1 = prev1.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            prev1 = prev1.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            prev1 = prev1.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+
+                        prev1 = prev1.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         PageState.PageNumberState();
                         JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
                         return Ok(previousData1);
@@ -335,24 +507,43 @@ namespace TestingPagination.Controllers
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage; */
                      PageState.CurrentItem -= PageState.ItemPerPage;
-                    List<Employee> prev = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> prev = (db.employee_tb).ToList();
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        prev = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev = prev.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        prev = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev = prev.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        prev = db.employee_tb.Where(li => li.Status == true).ToList();
+                        prev = prev.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        prev = db.employee_tb.Where(li => li.Status == false).ToList();
+                        prev = prev.Where(li => li.Status == false).ToList();
                     }
+                    if (status != null && status.ToLower() == "active")
+                    {
+                        prev = prev.Where(li => li.Status == true).ToList();
+                    }
+                    else if (status != null && status.ToLower() == "inactive")
+                    {
+                        prev = prev.Where(li => li.Status == false).ToList();
+                    }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev = prev.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev = prev.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+
+                    prev = prev.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
                     PageState.PageNumberState();
                     JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
                     return Ok(previousData);
@@ -364,24 +555,42 @@ namespace TestingPagination.Controllers
                     {
                         /*ViewData["startPage"] = PageState.StartPage;
                         ViewData["endPage"] = PageState.EndPage; */
-                         List < Employee > same = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                         List < Employee > same = (db.employee_tb).ToList();
                         if (gender != null && gender.ToLower() == "male")
                         {
-                            same = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            same = same.Where(li => li.Gender == "Male").ToList();
 
                         }
                         else if (gender != null && gender.ToLower() == "female")
                         {
-                            same = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                            same = same.Where(li => li.Gender == "Female").ToList();
                         }
                         if (status != null && status.ToLower() == "active")
                         {
-                            same = db.employee_tb.Where(li => li.Status == true).ToList();
+                            same = same.Where(li => li.Status == true).ToList();
                         }
-                        else if (gender != null && gender.ToLower() == "inactive")
+                        else if (status != null && status.ToLower() == "inactive")
                         {
-                            same = db.employee_tb.Where(li => li.Status == false).ToList();
+                            same = same.Where(li => li.Status == false).ToList();
                         }
+                        if (status != null && status.ToLower() == "active")
+                        {
+                            same = same.Where(li => li.Status == true).ToList();
+                        }
+                        else if (status != null && status.ToLower() == "inactive")
+                        {
+                            same = same.Where(li => li.Status == false).ToList();
+                        }
+                        if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            same = same.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                        }
+                        if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                        {
+                            same = same.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                        }
+
+                        same = same.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                         PageState.PageNumberState();
                         JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
                         return Ok(sameData);
@@ -389,27 +598,38 @@ namespace TestingPagination.Controllers
                     PageState.CurrentPage = page;
                     int skip = (PageState.CurrentPage - 1) * PageState.ItemPerPage;
                     PageState.CurrentItem = skip;
-                    List<Employee> defined = (db.employee_tb).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
-                    
+                    List<Employee> defined = (db.employee_tb).ToList();
+
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage; */
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        defined = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Gender == "Male").ToList();
 
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        defined = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        defined = db.employee_tb.Where(li => li.Status == true).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        defined = db.employee_tb.Where(li => li.Status == false).OrderByDescending(elem => elem.Name).Skip(skip).Take(PageState.ItemPerPage).ToList();
+                        defined = defined.Where(li => li.Status == false).ToList();
                     }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        defined = defined.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        defined = defined.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+
+                    defined = defined.OrderByDescending(elem => elem.Name).Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
                     PageState.PageNumberState();
                     JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
                     return Ok(definedData);
@@ -417,24 +637,36 @@ namespace TestingPagination.Controllers
 
 
 
-                List<Employee> searchedData = (db.employee_tb).OrderByDescending(elem => elem.Name).ToList();
+                List<Employee> searchedData = (db.employee_tb).ToList();
+                
                 if (gender != null && gender.ToLower() == "male")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Gender == "Male").OrderByDescending(elem => elem.Name).ToList();
+                    searchedData = searchedData.Where(li => li.Gender == "Male").ToList();
 
                 }
                 else if (gender != null && gender.ToLower() == "female")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Gender == "Female").OrderByDescending(elem => elem.Name).ToList();
+                    searchedData = searchedData.Where(li => li.Gender == "Female").ToList();
                 }
                 if (status != null && status.ToLower() == "active")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Status == true).ToList();
+                    searchedData = searchedData.Where(li => li.Status == true).ToList();
                 }
-                else if (gender != null && gender.ToLower() == "inactive")
+                else if (status != null && status.ToLower() == "inactive")
                 {
-                    searchedData = db.employee_tb.Where(li => li.Status == false).ToList();
+                    searchedData = searchedData.Where(li => li.Status == false).ToList();
                 }
+                if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    searchedData = searchedData.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                }
+                if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    searchedData = searchedData.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                }
+
+                searchedData = searchedData.OrderByDescending(elem => elem.Name).ToList();
+
                 PageState.CurrentPage = 1;
                 //PageState.ItemPerPage = itemPerPage == 0 ? 2 : itemPerPage;
                 PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
@@ -447,32 +679,44 @@ namespace TestingPagination.Controllers
                  JsonData frontData1 = new JsonData(searchedData.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList(), PageState.StartPage, PageState.EndPage);
                 return Ok(frontData1);
             }
+            ///
+            ///default data
+            ///
 
 
 
             if (next == "next") {
                 if (PageState.TotalPages == PageState.CurrentPage)
                 {
-                    List<Employee> last = db.employee_tb.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
-                    
+                    List<Employee> last = db.employee_tb.ToList();
+
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage;*/
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        last = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        last = last.Where(li => li.Gender == "Male").ToList();
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        last = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        last = last.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        last = db.employee_tb.Where(li => li.Status == true).ToList();
+                        last = last.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        last = db.employee_tb.Where(li => li.Status == false).ToList();
+                        last = last.Where(li => li.Status == false).ToList();
                     }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        last = last.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        last = last.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    last = last.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
                     PageState.PageNumberState();
                     JsonData lastData = new JsonData(last, PageState.StartPage, PageState.EndPage);
                     return Ok(lastData);
@@ -482,23 +726,34 @@ namespace TestingPagination.Controllers
                 /*ViewData["startPage"] = PageState.StartPage;
                 ViewData["endPage"] = PageState.EndPage;*/
                 PageState.CurrentItem += PageState.ItemPerPage;
-                List<Employee> nex = db.employee_tb.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                List<Employee> nex = db.employee_tb.ToList();
                 if (gender != null && gender.ToLower() == "male")
                 {
-                    nex = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    nex = nex.Where(li => li.Gender == "Male").ToList();
                 }
                 else if (gender != null && gender.ToLower() == "female")
                 {
-                    nex = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    nex = nex.Where(li => li.Gender == "Female").ToList();
                 }
                 if (status != null && status.ToLower() == "active")
                 {
-                    nex = db.employee_tb.Where(li => li.Status == true).ToList();
+                    nex = nex.Where(li => li.Status == true).ToList();
                 }
-                else if (gender != null && gender.ToLower() == "inactive")
+                else if (status != null && status.ToLower() == "inactive")
                 {
-                    nex = db.employee_tb.Where(li => li.Status == false).ToList();
+                    nex = nex.Where(li => li.Status == false).ToList();
                 }
+                if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    nex = nex.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                }
+                if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    nex = nex.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                }
+
+                nex = nex.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
                 PageState.PageNumberState();
                 JsonData lastData1 = new JsonData(nex, PageState.StartPage, PageState.EndPage);
                 return Ok(lastData1);
@@ -508,26 +763,37 @@ namespace TestingPagination.Controllers
                 
                 if (1 == PageState.CurrentPage)
                 {
-                    List<Employee> prev1 = db.employee_tb.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
-                    
+                    List<Employee> prev1 = db.employee_tb.ToList();
+
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage;*/
+                    int count1 = prev1.Count;
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        prev1 = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev1 = prev1.Where(li => li.Gender == "Male").ToList();
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        prev1 = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        prev1 = prev1.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        prev1 = db.employee_tb.Where(li => li.Status == true).ToList();
+                        prev1 = prev1.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        prev1 = db.employee_tb.Where(li => li.Status == false).ToList();
+                        prev1 = prev1.Where(li => li.Status == false).ToList();
                     }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev1 = prev1.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        prev1 = prev1.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+                    prev1 = prev1.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    
                     PageState.PageNumberState();
                     JsonData previousData1 = new JsonData(prev1, PageState.StartPage, PageState.EndPage);
                     return Ok(previousData1);
@@ -537,23 +803,35 @@ namespace TestingPagination.Controllers
                 /*ViewData["startPage"] = PageState.StartPage;
                 ViewData["endPage"] = PageState.EndPage;*/
                 PageState.CurrentItem -= PageState.ItemPerPage;
-                List<Employee> prev = db.employee_tb.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                List<Employee> prev = db.employee_tb.ToList();
+                
                 if (gender != null && gender.ToLower() == "male")
                 {
-                    prev = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    prev = prev.Where(li => li.Gender == "Male").ToList();
                 }
                 else if (gender != null && gender.ToLower() == "female")
                 {
-                    prev = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    prev = prev.Where(li => li.Gender == "Female").ToList();
                 }
                 if (status != null && status.ToLower() == "active")
                 {
-                    prev = db.employee_tb.Where(li => li.Status == true).ToList();
+                    prev = prev.Where(li => li.Status == true).ToList();
                 }
-                else if (gender != null && gender.ToLower() == "inactive")
+                else if (status != null && status.ToLower() == "inactive")
                 {
-                    prev = db.employee_tb.Where(li => li.Status == false).ToList();
+                    prev = prev.Where(li => li.Status == false).ToList();
                 }
+                if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    prev = prev.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                }
+                if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    prev = prev.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                }
+                prev = prev.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
+                
                 PageState.PageNumberState();
                 JsonData previousData = new JsonData(prev, PageState.StartPage, PageState.EndPage);
                 return Ok(previousData);
@@ -563,49 +841,74 @@ namespace TestingPagination.Controllers
                 if (PageState.CurrentPage == page) {
                     /*ViewData["startPage"] = PageState.StartPage;
                     ViewData["endPage"] = PageState.EndPage;*/
-                    List<Employee> same = db.employee_tb.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    List<Employee> same = db.employee_tb.ToList();
+                    
                     if (gender != null && gender.ToLower() == "male")
                     {
-                        same = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        same = same.Where(li => li.Gender == "Male").ToList();
                     }
                     else if (gender != null && gender.ToLower() == "female")
                     {
-                        same = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                        same = same.Where(li => li.Gender == "Female").ToList();
                     }
                     if (status != null && status.ToLower() == "active")
                     {
-                        same = db.employee_tb.Where(li => li.Status == true).ToList();
+                        same = same.Where(li => li.Status == true).ToList();
                     }
-                    else if (gender != null && gender.ToLower() == "inactive")
+                    else if (status != null && status.ToLower() == "inactive")
                     {
-                        same = db.employee_tb.Where(li => li.Status == false).ToList();
+                        same = same.Where(li => li.Status == false).ToList();
                     }
+                    if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        same = same.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                    }
+                    if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                    {
+                        same = same.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                    }
+
+                    same =same.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
+                    
                     JsonData sameData = new JsonData(same, PageState.StartPage, PageState.EndPage);
                     return Ok(sameData);
                 }
                 PageState.CurrentPage = page;
                 int skip = (PageState.CurrentPage-1)*PageState.ItemPerPage;
                 PageState.CurrentItem =skip;
-                List<Employee> defined = db.employee_tb.Skip(skip).Take(PageState.ItemPerPage).ToList();
+                List<Employee> defined = db.employee_tb.ToList();
                 
                 /*ViewData["startPage"] = PageState.StartPage;
                 ViewData["endPage"] = PageState.EndPage;*/
                 if (gender != null && gender.ToLower() == "male")
                 {
-                    defined = db.employee_tb.Where(li => li.Gender == "Male").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    defined = defined.Where(li => li.Gender == "Male").ToList();
                 }
                 else if (gender != null && gender.ToLower() == "female")
                 {
-                    defined = db.employee_tb.Where(li => li.Gender == "Female").Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+                    defined = defined.Where(li => li.Gender == "Female").ToList();
                 }
                 if (status != null && status.ToLower() == "active")
                 {
-                    defined = db.employee_tb.Where(li => li.Status == true).ToList();
+                    defined = defined.Where(li => li.Status == true).ToList();
                 }
-                else if (gender != null && gender.ToLower() == "inactive")
+                else if (status != null && status.ToLower() == "inactive")
                 {
-                    defined = db.employee_tb.Where(li => li.Status == false).ToList();
+                    defined = defined.Where(li => li.Status == false).ToList();
                 }
+                if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    defined = defined.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+                }
+                if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00"))
+                {
+                    defined = defined.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
+                }
+
+                defined = defined.Skip(PageState.CurrentItem).Take(PageState.ItemPerPage).ToList();
+
+                
                 PageState.PageNumberState();
                 JsonData definedData = new JsonData(defined, PageState.StartPage, PageState.EndPage);
                 return Ok(definedData);
@@ -616,18 +919,26 @@ namespace TestingPagination.Controllers
 
             if (gender != null && gender.ToLower() == "male")
             {
-                li = db.employee_tb.Where(li => li.Gender == "Male").ToList();
+                li = li.Where(li => li.Gender == "Male").ToList();
 
             } else if (gender != null && gender.ToLower() == "female") {
-                li = db.employee_tb.Where(li => li.Gender == "Female").ToList();
+                li =li.Where(li => li.Gender == "Female").ToList();
             }
             if (status != null && status.ToLower() == "active")
             {
-                li = db.employee_tb.Where(li => li.Status == true).ToList();
+                li = li.Where(li => li.Status == true).ToList();
             }
-            else if (gender != null && gender.ToLower() == "inactive")
+            else if (status != null && status.ToLower() == "inactive")
             {
-                li = db.employee_tb.Where(li => li.Status == false).ToList();
+                li = li.Where(li => li.Status == false).ToList();
+            }
+            
+            if (filterCreated == "created" && createdFromDate != DateTime.Parse("01-01-0001 00:00:00") && createdToDate != DateTime.Parse("01-01-0001 00:00:00"))
+            {
+                li = li.Where(li => li.created_date >= createdFromDate && li.created_date <= createdToDate).ToList();
+            }
+            if (filterModified == "modified" && modifiedFromDate != DateTime.Parse("01-01-0001 00:00:00") && modifiedToDate != DateTime.Parse("01-01-0001 00:00:00")) {
+                li = li.Where(li => li.modifed_date >= modifiedFromDate && li.modifed_date <= modifiedToDate).ToList();
             }
             PageState.CurrentPage = 1;
             PageState.ItemPerPage = itemPerPage != 0 ? itemPerPage : PageState.ItemPerPage;
@@ -655,7 +966,7 @@ namespace TestingPagination.Controllers
 
         private static string lastSearch;
         //Search Operation
-        public IActionResult Search([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string search, [FromQuery] string sort)
+        public IActionResult Search([FromQuery] string next, [FromQuery] string previous, [FromQuery] int page, [FromForm] int itemPerPage, [FromQuery] string search, [FromQuery] string sort,[FromQuery] string gender, [FromQuery] string status,[FromQuery] string filterDate ,[FromQuery] DateTime toDate, [FromQuery] DateTime fromDate)
         {
             if (sort != null)
             {

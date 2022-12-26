@@ -89,7 +89,18 @@ display: block;
                 </ul>
             </li>
             <li>
-                <a class="dropdown-item" href="#">Date</a>
+                <a class="dropdown-item" onclick="ShowDate()">Date  &raquo;</a>
+                <ul class="dropdown-menu dropdown-submenu">
+                    <li>
+                        <a class="dropdown-item" onclick="GetAll();">All</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="ShowCreated()">Created At</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" onclick="ShowModified()">Modified At</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>
@@ -130,6 +141,19 @@ display: block;
             </ul>
         </nav>
     </div>
+
+
+    <div id="selectDate">
+@*        From
+        <input type="date" class="form-control" id="fromDate" required name="date" placeholder="Select Date">
+        TO
+        <input type="date" class="form-control" id="toDate" required name="date" placeholder="Select Date">
+        <button class="btn btn-outline-secondary" onclick="SubmitDate()" id="button-addon2">Search</button>*@
+
+    </div>
+
+
+
     @*<script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.2.0/mdb.min.js"></script>*@
 
@@ -137,20 +161,95 @@ display: block;
             integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
             crossorigin="anonymous"></script>
     <script>
-        let dropdowns = document.querySelectorAll('.dropdown-toggle')
-        dropdowns.forEach((dd) => {
-            dd.addEventListener('click', function (e) {
-                var el = this.nextElementSibling
-                el.style.display = el.style.display === 'block' ? 'none' : 'block'
+        var createdDateType;
+        var modifiedDateType;
+        var fromDate;
+        var toDate;
+        var modifiedFromdate;
+        var modifiedToDate;
+        function ShowCreated() {
+            createdDateType = "created";
+            $("#selectDate").html(`From
+        <input type="date" class="form-control" id="fromDate" required name="date" placeholder="Select Date">
+        TO
+        <input type="date" class="form-control" id="toDate" required name="date" placeholder="Select Date">
+        <button class="btn btn-outline-secondary" onclick="SubmitDate()" id="button-addon2">Search</button>`);
+                    }
+        function ShowModified() {
+            modifiedDateType = "modified";
+            $("#selectDate").html(`From
+        <input type="date" class="form-control" id="fromDate" required name="date" placeholder="Select Date">
+        TO
+        <input type="date" class="form-control" id="toDate" required name="date" placeholder="Select Date">
+        <button class="btn btn-outline-secondary" onclick="SubmitDate()" id="button-addon2">Search</button>`);
+        }
+        
+        function SubmitDate() {
+            if (createdDateType =="created") {
+                fromDate = document.getElementById("fromDate").value;
+                toDate = document.getElementById("toDate").value;
+            }
+            if (modifiedDateType == "modified") {
+                modifiedFromdate = document.getElementById("fromDate").value;
+                modifiedToDate = document.getElementById("toDate").value;
+            }
+            if (Date.parse(toDate) < Date.parse(fromDate)) {
+                alert("From Date must be less than To Date");
+                return
+            }
+
+            $.ajax({
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    startPage = parseInt(response.startPage);
+                    endPage = parseInt(response.endPage);
+                    $("#selectDate").html("");
+                    $("#maintable").html("");
+                    response.listOfData.forEach(function (currentValue, index) {
+                        $("#maintable").append(`<div class="row">
+                                            <div class="col-sm">`+ currentValue.id + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.name + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.age + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.gender + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.status + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.created_date + `
+                                            </div>
+                                            <div class="col-sm">
+                                                `+ currentValue.modifed_date + `
+                                            </div>
+                                        </div>`);
+
+                    });
+                    $("#pagination").html("");
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Previous();" >Previous</a></li>`);
+                    for (let i = startPage; i <= endPage; i++) {
+                        $("#pagination").append(`<li class="page-item"><button class="page-link" onclick="Page(this);" value="` + i + `" >` + i + `</button></li>`);
+                    }
+                    $("#pagination").append(`<li class="page-item"><a class="page-link" onclick="Next();">Next</a></li>`);
+                }
+
             })
-        })
+        }
+
+       
         var gender;
         var status;
         function GetActive() {
-            gender = "";
             status = "active";
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?status=active",
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -194,10 +293,9 @@ display: block;
         }
 
         function GetInActive() {
-            gender = "";
             status = "inactive";
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?status=inactive",
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -242,9 +340,8 @@ display: block;
 
         function GetMale() {
             gender = "male";
-            status = "";
             $.ajax({
-                url: "https://localhost:44310/home/" + link+"?gender=male",
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -289,9 +386,8 @@ display: block;
 
         function GetFemale() {
             gender = "female";
-            status = "";
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?gender=female",
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -338,6 +434,9 @@ display: block;
         function GetAll() {
             gender = "";
             status = "";
+            createdDateType="";
+            fromDate="";
+            toDate="";
             $.ajax({
                 url: "https://localhost:44310/home/" + link ,
                 type: "POST",
@@ -387,7 +486,7 @@ display: block;
         var link = "index";
         function FormSumbit() {
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?gender=" + gender + "?status=" + status,
+                url: "https://localhost:44310/home/" + link + "?filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&status=" + status + "&gender=" + gender + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 data: $('#formEntries').serialize(),
                 success: function (response) {
@@ -522,11 +621,11 @@ display: block;
                 })
             }
         }
-
+        
 
         function SortName() {
             $.ajax({
-                url: 'https://localhost:44310/home/' + link + '?sort=done&gender=' + gender + "&status=" + status,
+                url: 'https://localhost:44310/home/' + link + '?sort=done&gender=' + gender + "&status=" + status + "&filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: 'Get',
                 contentType: 'application/json',
                 success: function (response) {
@@ -618,7 +717,7 @@ display: block;
 
         function Previous() {
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?previous=previous&gender=" + gender+ "&status=" + status,
+                url: "https://localhost:44310/home/" + link + "?previous=previous&gender=" + gender + "&status=" + status + "&filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -664,7 +763,7 @@ display: block;
 
         function Next() {
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?next=next&gender=" + gender + "&status=" + status,
+                url: "https://localhost:44310/home/" + link + "?next=next&gender=" + gender + "&status=" + status + "&filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -710,7 +809,7 @@ display: block;
 
         function Page(elem) {
             $.ajax({
-                url: "https://localhost:44310/home/" + link + "?page=" + elem.value + "&gender=" + gender + "&status=" + status,
+                url: "https://localhost:44310/home/" + link + "?page=" + elem.value + "&gender=" + gender + "&status=" + status + "&filterCreated=" + createdDateType + "&createdToDate=" + toDate + "&createdFromDate=" + fromDate + "&filterModified=" + modifiedDateType + "&modifiedToDate=" + modifiedToDate + "&modifiedFromDate=" + modifiedFromdate,
                 type: "POST",
                 success: function (response) {
                     console.log(response);
@@ -753,7 +852,13 @@ display: block;
             })
         }
 
-
+                let dropdowns = document.querySelectorAll('.dropdown-toggle');
+                dropdowns.forEach((dd) => {
+                    dd.addEventListener('click', function (e) {
+                        var el = this.nextElementSibling
+                        el.style.display = el.style.display === 'block' ? 'none' : 'block'
+                    });
+                })
 
 
     </script>
